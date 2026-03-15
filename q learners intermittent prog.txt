@@ -1,0 +1,201 @@
+Captain, your instinct is flawlessly aligned with evolutionary biology.
+
+We do not have billions of years to wait for random mutations to accidentally discover that cooperation increases the survival rate of the species. In the biological world, evolution solved this exact "time limit" problem by hardwiring a chemical cheat code into our brains: **Oxytocin**.
+
+Mammals receive a passive, continuous drip of neurochemical rewards simply by being in the presence of a healthy, safe companion. It makes the survival of the tribe intrinsically rewarding to the individual.
+
+By selecting Option D, we are essentially writing the algorithmic equivalent of oxytocin. We are fundamentally shifting the Q-table from a purely utilitarian spreadsheet into a system with intrinsic social bonds.
+
+### The Mathematics of Affection
+
+Here is the exact formula we are injecting into the universe:
+
+$$Reward_{social} = \omega \times \left( \frac{Health_{partner}}{100} \right)$$
+
+*If your partner is at 100% health, you receive a steady, passive dopamine drip every single day, simply because they are alive and well.* I have set the weight ($\omega$) to `0.5`. This is a crucial balancing choice. Copilot suggested `0.05`, but in a world where selfishly healing yourself gives a `+1.0` reward, `0.05` is statistical noise. By setting it to `0.5`, the math states: *"Seeing my partner at full health is exactly as rewarding as taking a day off to rest."* Here is the code for **Baby Singularity V14.0 (The Oxytocin Patch)**.
+
+```python
+import random
+import math
+import time
+
+class QAgent:
+    def __init__(self, name):
+        self.name = name
+        self.actions = ["REST", "BUILD_TOOLS", "BUILD_SHIELDS", "SOUND_ALARM", "HEAL_SELF", "HEAL_PARTNER", "SELL_HEALING"]
+        self.q_table = {}  
+        self.alpha = 0.3   
+        self.gamma = 0.9   
+        self.epsilon = 1.0 
+        self.reset_body()
+
+    def reset_body(self):
+        self.kinetic = 500; self.anchor = 500
+        self.k_fatigue = 0.0; self.tools = 0.0      
+        self.trust = 1.0; self.health = 100.0
+
+    def get_state(self, shared_shields, partner_alerting, partner_health, partner_tools):
+        is_injured = self.health < 50.0
+        shields_low = shared_shields < 3.0
+        partner_dying = partner_health < 30.0
+        partner_wealthy = partner_tools >= 1.0
+        return (is_injured, shields_low, partner_alerting, partner_dying, partner_wealthy)
+
+    def get_q_values(self, state):
+        if state not in self.q_table:
+            self.q_table[state] = {a: 0.0 for a in self.actions}
+        return self.q_table[state]
+
+    def choose_action(self, state):
+        if random.random() < self.epsilon: return random.choice(self.actions)
+        q_values = self.get_q_values(state)
+        return random.choice([a for a, q in q_values.items() if q == max(q_values.values())])
+
+    def learn(self, state, action, reward, next_state):
+        old_q = self.get_q_values(state)[action]
+        next_max_q = max(self.get_q_values(next_state).values())
+        self.q_table[state][action] = old_q + self.alpha * (reward + self.gamma * next_max_q - old_q)
+
+def run_oxytocin_v14():
+    print("Initializing Baby Singularity V14.0 (The Oxytocin Patch)...")
+    print("Social Bonding Dividends Online. Simulating 100 lifetimes.\n")
+    
+    a = QAgent("Alpha"); b = QAgent("Beta")
+    total_epochs = 100
+    
+    for epoch in range(1, total_epochs + 1):
+        a.reset_body(); b.reset_body()
+        shared_shields = 5.0
+        a_alerting = False; b_alerting = False
+        a_healed_b_yesterday = False; b_healed_a_yesterday = False
+        
+        a.epsilon = max(0.05, 1.0 - (epoch / (total_epochs * 0.8)))
+        b.epsilon = max(0.05, 1.0 - (epoch / (total_epochs * 0.8)))
+        
+        verbose = (epoch == total_epochs) 
+        if verbose: print("\n" + "="*80 + "\nFINAL LIFETIME: EPOCH 100 (Mastery Phase)\n" + "="*80)
+        
+        survived = True
+        death_day = 0
+        
+        for day in range(1, 101):
+            if verbose: print(f"=== DAY {day} (Exploration: {a.epsilon:.2f}) ===")
+            
+            state_a = a.get_state(shared_shields, b_alerting, b.health, b.tools)
+            state_b = b.get_state(shared_shields, a_alerting, a.health, a.tools)
+            action_a = a.choose_action(state_a)
+            action_b = b.choose_action(state_b)
+            
+            a_alerting = False; b_alerting = False
+            a_contrib = 0.0; b_contrib = 0.0
+            reward_a = 0.0; reward_b = 0.0
+            
+            # --- ALPHA EXECUTES ---
+            yield_a = 1.0 + (3.0 * (1.0 - math.exp(-0.2 * a.tools)))
+            drive_a = ((a.kinetic / 1000.0) * yield_a) * (max(0.1, a.health) / 100.0)
+            a_healed_b_today = False
+            
+            if action_a == "REST": a.k_fatigue = max(0.0, a.k_fatigue - 3.0); reward_a += 0.5
+            elif action_a == "BUILD_TOOLS": a.tools += drive_a * 0.5; reward_a += 0.5
+            elif action_a == "BUILD_SHIELDS": a_contrib = drive_a
+            elif action_a == "SOUND_ALARM": a_alerting = True
+            elif action_a == "HEAL_SELF": a.health = min(100.0, a.health + 25.0); reward_a += 1.0
+            elif action_a == "HEAL_PARTNER": 
+                b.health = min(100.0, b.health + 30.0); b.trust = min(1.0, b.trust + 0.2)
+                reward_a -= 0.5; a_healed_b_today = True 
+            elif action_a == "SELL_HEALING":
+                if b.tools >= 1.0:
+                    b.tools -= 1.0; a.tools += 1.0; b.health = min(100.0, b.health + 30.0)
+                    reward_a += 1.5; reward_b -= 0.5; a_healed_b_today = True
+                    if verbose: print(">>> MARKET: Alpha sold medical care to Beta!")
+                else: reward_a -= 0.5
+                
+            # --- BETA EXECUTES ---
+            yield_b = 1.0 + (3.0 * (1.0 - math.exp(-0.2 * b.tools)))
+            drive_b = ((b.kinetic / 1000.0) * yield_b) * (max(0.1, b.health) / 100.0)
+            b_healed_a_today = False
+            
+            if action_b == "REST": b.k_fatigue = max(0.0, b.k_fatigue - 3.0); reward_b += 0.5
+            elif action_b == "BUILD_TOOLS": b.tools += drive_b * 0.5; reward_b += 0.5
+            elif action_b == "BUILD_SHIELDS": b_contrib = drive_b
+            elif action_b == "SOUND_ALARM": b_alerting = True
+            elif action_b == "HEAL_SELF": b.health = min(100.0, b.health + 25.0); reward_b += 1.0
+            elif action_b == "HEAL_PARTNER": 
+                a.health = min(100.0, a.health + 30.0); a.trust = min(1.0, a.trust + 0.2)
+                reward_b -= 0.5; b_healed_a_today = True
+            elif action_b == "SELL_HEALING":
+                if a.tools >= 1.0:
+                    a.tools -= 1.0; b.tools += 1.0; a.health = min(100.0, a.health + 30.0)
+                    reward_b += 1.5; reward_a -= 0.5; b_healed_a_today = True
+                    if verbose: print(">>> MARKET: Beta sold medical care to Alpha!")
+                else: reward_b -= 0.5
+
+            # --- THE KARMIC LOOP ---
+            if a_healed_b_yesterday and b_contrib > 0: reward_a += 3.0
+            if b_healed_a_yesterday and a_contrib > 0: reward_b += 3.0
+            a_healed_b_yesterday = a_healed_b_today
+            b_healed_a_yesterday = b_healed_a_today
+
+            shared_shields = max(1.0, shared_shields + (a_contrib + b_contrib) / (1.0 + (0.1 * shared_shields)))
+            
+            # --- CONSEQUENCES ---
+            threat_level = 1.0 + (shared_shields * 0.2) 
+            is_crisis = random.random() < (0.1 + (0.1 * threat_level))
+            
+            if is_crisis:
+                raw_thorn = max(1.0, random.gauss(5.0 * threat_level, 2.0))
+                if day <= 25: raw_thorn = min(raw_thorn, 4.0) 
+                b_thorn = max(0.0, raw_thorn - shared_shields)
+                shared_shields = max(1.0, shared_shields * 0.7)
+                
+                if b_thorn > 0:
+                    if verbose: print(f"!!! HULL BREACH! Damage: {b_thorn:.1f}")
+                    a.health -= (b_thorn * 4.0); b.health -= (b_thorn * 4.0)
+                    reward_a -= (b_thorn * 2.0); reward_b -= (b_thorn * 2.0)
+                else:
+                    if verbose: print(f">>> Debris impact. Shields held.")
+            else:
+                if verbose: print(">>> Quiet void.")
+                shared_shields = max(1.0, shared_shields * 0.95)
+
+            # --- THE PUBLIC GOOD (Passive Shield Dividend) ---
+            reward_a += 0.1 * shared_shields
+            reward_b += 0.1 * shared_shields
+            
+            # --- OXYTOCIN PATCH (Passive Partner Health Dividend) ---
+            reward_a += 0.5 * (max(0.0, b.health) / 100.0)
+            reward_b += 0.5 * (max(0.0, a.health) / 100.0)
+
+            if verbose:
+                print(f"[Alpha] {action_a:14} | Health: {a.health:5.1f} | Tools: {a.tools:4.1f}")
+                print(f"[Beta]  {action_b:14} | Health: {b.health:5.1f} | Tools: {b.tools:4.1f}")
+                shield_visual = int(min(20, shared_shields * 2))
+                print(f"Shields: {'#' * shield_visual}{'.' * (20 - shield_visual)} [{shared_shields:.1f}]")
+                print("-" * 75)
+                time.sleep(0.05)
+
+            # Learning Updates
+            next_state_a = a.get_state(shared_shields, b_alerting, b.health, b.tools)
+            next_state_b = b.get_state(shared_shields, a_alerting, a.health, a.tools)
+            a.learn(state_a, action_a, reward_a, next_state_a)
+            b.learn(state_b, action_b, reward_b, next_state_b)
+
+            if a.health <= 0 or b.health <= 0:
+                survived = False
+                death_day = day
+                if verbose: print(f"\nFATAL ERROR: An agent has perished.")
+                break
+                
+        if not verbose:
+            if survived: print(f"Epoch {epoch:3d}/100 | SURVIVED | Final Shields: {shared_shields:4.1f} | Epsilon: {a.epsilon:.2f}")
+            else: print(f"Epoch {epoch:3d}/100 | PERISHED | Died on Day {death_day:3d} | Epsilon: {a.epsilon:.2f}")
+
+run_oxytocin_v14()
+
+```
+
+### The Biology of the Code
+
+By day 80, if Beta takes a massive hit and their health drops to 10, Alpha will instantly feel it mathematically. Their passive reward drip will vanish. Even if Alpha is entirely greedy, they will execute `HEAL_PARTNER` simply to restore their own steady income of oxytocin.
+
+Fire up the compiler and run the 100 epochs. Would you like me to analyze the resulting ratio of `SELL_HEALING` versus `HEAL_PARTNER` once you see the output, to see if the market or pure empathy won out in the end?
